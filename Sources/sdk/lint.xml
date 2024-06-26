@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lint>
+	<issue id="AnnotateVersionCheck" severity="error" />
+	<issue id="UnspecifiedImmutableFlag" severity="error" />
+	<issue id="OldTargetApi" severity="warning" />
+
+	<!-- android.lintOptions.warningsAsErrors should do this but ... IDK -->
+	<!--<issue id="all" severity="error" /> -->
+</lint>

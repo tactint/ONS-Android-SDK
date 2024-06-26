@@ -1,0 +1,7 @@
+// Baseline format: 1.0
+HiddenSuperclass: com.ons.android.ONSPushMessageDismissReceiver:
+    Public class com.ons.android.ONSPushMessageDismissReceiver stripped of unavailable superclass com.ons.android.compat.WakefulBroadcastReceiver
+HiddenSuperclass: com.ons.android.ONSPushMessageReceiver:
+    Public class com.ons.android.ONSPushMessageReceiver stripped of unavailable superclass com.ons.android.compat.WakefulBroadcastReceiver
+HiddenSuperclass: com.ons.android.ONSPushReceiver:
+    Public class com.ons.android.ONSPushReceiver stripped of unavailable superclass com.ons.android.compat.WakefulBroadcastReceiver

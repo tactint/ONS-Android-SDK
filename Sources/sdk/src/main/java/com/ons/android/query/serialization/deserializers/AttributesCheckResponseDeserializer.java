@@ -1,0 +1,47 @@
+package com.ons.android.query.serialization.deserializers;
+
+import com.ons.android.json.JSONException;
+import com.ons.android.json.JSONObject;
+import com.ons.android.query.response.AttributesCheckResponse;
+
+/**
+ * Deserializer class for {@link AttributesCheckResponse}
+ */
+public class AttributesCheckResponseDeserializer extends ResponseDeserializer {
+
+    /**
+     * Constructor
+     *
+     * @param json json response
+     */
+    public AttributesCheckResponseDeserializer(JSONObject json) {
+        super(json);
+    }
+
+    /**
+     * Deserialize method
+     *
+     * @return AttributesCheckResponse deserialized
+     * @throws JSONException parsing exception
+     */
+    @Override
+    public AttributesCheckResponse deserialize() throws JSONException {
+        AttributesCheckResponse response = new AttributesCheckResponse(getId());
+        if (json.hasNonNull("action")) {
+            response.setActionString(json.getString("action"));
+        }
+        if (json.hasNonNull("ver")) {
+            response.setVersion(json.getLong("ver"));
+        }
+        if (json.has("t") && !json.isNull("t")) {
+            response.setTime(json.getLong("t"));
+        }
+        if (json.hasNonNull("project_key")) {
+            String projectKey = json.getString("project_key");
+            if (!projectKey.isEmpty()) {
+                response.setProjectKey(projectKey);
+            }
+        }
+        return response;
+    }
+}

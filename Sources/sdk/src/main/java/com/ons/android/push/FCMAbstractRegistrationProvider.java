@@ -1,0 +1,100 @@
+package com.ons.android.push;
+
+import android.text.TextUtils;
+import androidx.annotation.Nullable;
+import com.ons.android.PushRegistrationProvider;
+import com.ons.android.PushRegistrationProviderAvailabilityException;
+import com.ons.android.core.Logger;
+import com.ons.android.module.PushModule;
+import com.google.firebase.FirebaseApp;
+
+public abstract class FCMAbstractRegistrationProvider implements PushRegistrationProvider {
+
+    protected String senderID = null;
+    protected String fcmProjectID = null;
+
+    FCMAbstractRegistrationProvider() {
+        loadProjectInformation();
+    }
+
+    public void loadProjectInformation() {
+        try {
+            FirebaseApp fbApp = FirebaseApp.getInstance();
+            String senderID = fbApp.getOptions().getGcmSenderId();
+            if (TextUtils.isEmpty(senderID)) {
+                Logger.error(
+                    PushModule.TAG,
+                    "Could not register for FCM Push: Could not get a Sender ID for this project. Are notifications well configured in the project's console and your google-services.json up to date?"
+                );
+                return;
+            }
+            this.senderID = senderID;
+            this.fcmProjectID = fbApp.getOptions().getProjectId();
+
+            Logger.internal(
+                PushModule.TAG,
+                "Using FCM Sender ID from builtin configuration: " + senderID + ", Project ID: " + fcmProjectID
+            );
+        } catch (NoClassDefFoundError | Exception e) {
+            Logger.error(PushModule.TAG, "Could not register for FCM Push: Firebase has thrown an exception", e);
+        }
+    }
+
+    @Override
+    public String getSenderID() {
+        return senderID;
+    }
+
+    @Nullable
+    @Override
+    public String getGCPProjectID() {
+        return fcmProjectID;
+    }
+
+    @Override
+    public void checkServiceAvailability() {
+        // We do nothing here because FCM is checked in the factory
+    }
+
+    @Override
+    public void checkLibraryAvailability() throws PushRegistrationProviderAvailabilityException {
+        Logger.internal(PushModule.TAG, "Checking FCM libraries availability");
+
+        if (!isFirebaseCorePresent()) {
+            throw new PushRegistrationProviderAvailabilityException(
+                "Firebase Core is missing. Did you add 'com.google.firebase:firebase-core' to your gradle dependencies?"
+            );
+        }
+
+        if (!isFirebaseMessagingPresent()) {
+            throw new PushRegistrationProviderAvailabilityException(
+                "Firebase Messaging is missing. Did you add 'com.google.firebase:firebase-messaging' to your gradle dependencies?"
+            );
+        }
+
+        if (!PushModule.isONSPushServiceAvailable()) {
+            throw new PushRegistrationProviderAvailabilityException(
+                "com.ons.android.ONSPushService is missing from the manifest."
+            );
+        }
+    }
+
+    private boolean isFirebaseCorePresent() {
+        try {
+            Class.forName("com.google.firebase.FirebaseApp");
+            return true;
+        } catch (Throwable ex) {
+            return false;
+        }
+    }
+
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
+    public static boolean isFirebaseMessagingPresent() {
+        try {
+            Class.forName("com.google.firebase.messaging.FirebaseMessaging");
+            return true;
+        } catch (Throwable ex) {
+            return false;
+        }
+    }
+}

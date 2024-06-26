@@ -1,0 +1,195 @@
+package com.ons.android.actions;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.test.core.app.ApplicationProvider;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.filters.MediumTest;
+import com.ons.android.ONS;
+import com.ons.android.ONSTagCollectionsFetchListener;
+import com.ons.android.UserAction;
+import com.ons.android.UserActionRunnable;
+import com.ons.android.UserActionSource;
+import com.ons.android.di.DITest;
+import com.ons.android.di.providers.RuntimeManagerProvider;
+import com.ons.android.json.JSONException;
+import com.ons.android.json.JSONObject;
+import com.ons.android.module.ActionModule;
+import java.util.Map;
+import java.util.Set;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.robolectric.shadows.ShadowLog;
+
+@RunWith(AndroidJUnit4.class)
+@MediumTest
+public class ActionModuleTest extends DITest {
+
+    private static final String apiKey = "apiKey";
+    private Context context;
+
+    @Before
+    public void setUp() {
+        ShadowLog.stream = System.out;
+        context = ApplicationProvider.getApplicationContext();
+        RuntimeManagerProvider.get().setContext(context);
+        ONS.start(apiKey);
+    }
+
+    @Test
+    public void testAddUserTagRegisterAction() throws JSONException {
+        JSONObject jsonAdd = generateJSONTestAction("add");
+
+        new ActionModule().performAction(context, "ons.user.tag", jsonAdd, null);
+
+        ONS.User.fetchTagCollections(
+            context,
+            new ONSTagCollectionsFetchListener() {
+                @Override
+                public void onSuccess(Map<String, Set<String>> tagCollections) {
+                    assertTrue(tagCollections.get("bar").contains("foo"));
+                    assertEquals(1, tagCollections.get("bar").size());
+                }
+
+                @Override
+                public void onError() {
+                    fail();
+                }
+            }
+        );
+    }
+
+    @Test
+    public void testRemoveUserTagRegisterAction() throws JSONException {
+        JSONObject jsonAdd = generateJSONTestAction("add");
+        new ActionModule().performAction(context, "ons.user.tag", jsonAdd, null);
+
+        JSONObject jsonRemove = generateJSONTestAction("remove");
+        new ActionModule().performAction(context, "ons.user.tag", jsonRemove, null);
+
+        ONS.User.fetchTagCollections(
+            context,
+            new ONSTagCollectionsFetchListener() {
+                @Override
+                public void onSuccess(Map<String, Set<String>> tagCollections) {
+                    assertNull(tagCollections.get("bar"));
+                }
+
+                @Override
+                public void onError() {
+                    fail();
+                }
+            }
+        );
+    }
+
+    @Test
+    public void testGroupAction() throws JSONException {
+        ActionModule actionModule = new ActionModule();
+
+        StateSavingAction firstAction = new StateSavingAction();
+        StateSavingAction secondAction = new StateSavingAction();
+        actionModule.registerAction(new UserAction("first", firstAction));
+        actionModule.registerAction(new UserAction("second", secondAction));
+
+        String groupJSON = "{'actions':[['first', {'foo': 'bar'}],[],['invalid'],['second']]}";
+
+        actionModule.performAction(context, "ons.group", new JSONObject(groupJSON), null);
+
+        assertTrue(firstAction.executed);
+        assertTrue(secondAction.executed);
+
+        // Test that an invalid json doesn't crash
+        actionModule.performAction(context, "ons.group", new JSONObject("{}"), null);
+        actionModule.performAction(context, "ons.group", new JSONObject("{'foo':'bar'}"), null);
+        actionModule.performAction(context, "ons.group", new JSONObject("{'actions':'bar'}"), null);
+        actionModule.performAction(context, "ons.group", new JSONObject("{'actions':[]}"), null);
+        actionModule.performAction(context, "ons.group", new JSONObject("{'actions':{'foo':'bar'}}"), null);
+        actionModule.performAction(context, "ons.group", new JSONObject("{'actions':[{'foo':'bar'}]}"), null);
+    }
+
+    @Test
+    public void testGroupActionLimits() throws JSONException {
+        ActionModule actionModule;
+
+        // Check that nested "ons.group" actions doesn't work
+        actionModule = new ActionModule();
+        StateSavingAction shouldNotRun = new StateSavingAction();
+        actionModule.registerAction(new UserAction("shouldNotRun", shouldNotRun));
+
+        String nestedAction = "{'actions':[['ons.group', {'actions': ['shouldNotRun']}]]}";
+        actionModule.performAction(context, "ons.group", new JSONObject(nestedAction), null);
+
+        assertFalse(shouldNotRun.executed);
+
+        // Check that you can't run too many actions
+
+        actionModule = new ActionModule();
+        shouldNotRun = new StateSavingAction();
+        StateSavingAction dummyAction = new StateSavingAction();
+        actionModule.registerAction(new UserAction("dummy", dummyAction));
+        actionModule.registerAction(new UserAction("shouldNotRun", shouldNotRun));
+
+        // Make sure that 10 actions max can run
+        // This should only count valid actions
+        String manyActions =
+            "{'actions':[['dummy'], [], ['foo', 'bar'], ['dummy'], ['dummy'], ['dummy'], ['dummy'], ['dummy'], ['dummy'], ['dummy'], ['dummy'], ['dummy'], ['shouldNotRun']]}";
+
+        actionModule.performAction(context, "ons.group", new JSONObject(manyActions), null);
+
+        assertTrue(dummyAction.executed);
+        assertFalse(shouldNotRun.executed);
+    }
+
+    @Test
+    public void testClipboardAction() throws JSONException {
+        ActionModule actionModule = new ActionModule();
+
+        String clipboardJSON = "{'t':'best text ever', 'd':'best description ever'}";
+        assertTrue(actionModule.performAction(context, "ons.clipboard", new JSONObject(clipboardJSON), null));
+
+        ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+        ClipData text = clipboard.getPrimaryClip();
+
+        assertEquals("best description ever", text.getDescription().getLabel().toString());
+        assertEquals(1, text.getItemCount());
+        assertEquals("best text ever", text.getItemAt(0).getText().toString());
+    }
+
+    private JSONObject generateJSONTestAction(String action) throws JSONException {
+        JSONObject json = new JSONObject();
+        json.put("c", "bar");
+        json.put("t", "foo");
+        json.put("a", action);
+
+        return json;
+    }
+
+    /**
+     * An action that saves its state once executed, to make tracking its execution easier
+     */
+    class StateSavingAction implements UserActionRunnable {
+
+        public boolean executed = false;
+
+        @Override
+        public void performAction(
+            @Nullable Context context,
+            @NonNull String identifier,
+            @NonNull JSONObject args,
+            @Nullable UserActionSource source
+        ) {
+            executed = true;
+        }
+    }
+}

@@ -1,0 +1,23 @@
+-keep class com.ons.** {
+    *;
+}
+
+-dontwarn com.ons.android.**
+-dontnote com.ons.android.**
+
+-keepclassmembers class com.google.android.gms.gcm.GoogleCloudMessaging {
+    public static java.lang.String MESSAGE_TYPE_MESSAGE;
+    public static *** getInstance(...);
+    public *** getMessageType(...);
+    public *** register(...);
+}
+
+-keepclassmembers class com.google.android.gms.iid.InstanceID {
+    public static *** getInstance(...);
+    public *** getToken(...);
+}
+
+-keepclassmembers class com.google.android.gms.common.GooglePlayServicesUtil {
+    public static int GOOGLE_PLAY_SERVICES_VERSION_CODE;
+    public *** isGooglePlayServicesAvailable(...);
+}

@@ -1,0 +1,729 @@
+// Signature format: 2.0
+package com.ons.android {
+
+  public enum FailReason {
+    enum_constant public static final com.ons.android.FailReason DEACTIVATED_API_KEY;
+    enum_constant public static final com.ons.android.FailReason INVALID_API_KEY;
+    enum_constant public static final com.ons.android.FailReason NETWORK_ERROR;
+    enum_constant public static final com.ons.android.FailReason SDK_OPTED_OUT;
+    enum_constant public static final com.ons.android.FailReason UNEXPECTED_ERROR;
+  }
+
+  public interface InAppMessageUserActionSource extends com.ons.android.UserActionSource {
+    method @NonNull public com.ons.android.json.JSONObject getCustomPayload();
+  }
+
+  public interface LoggerDelegate {
+    method public void debug(String, String, Throwable);
+    method public void error(String, String, Throwable);
+    method public void info(String, String, Throwable);
+    method public void verbose(String, String, Throwable);
+    method public void warn(String, String, Throwable);
+  }
+
+  public enum LoggerLevel {
+    method public boolean canLog(com.ons.android.LoggerLevel);
+    enum_constant public static final com.ons.android.LoggerLevel ERROR;
+    enum_constant public static final com.ons.android.LoggerLevel INFO;
+    enum_constant public static final com.ons.android.LoggerLevel INTERNAL;
+    enum_constant public static final com.ons.android.LoggerLevel VERBOSE;
+    enum_constant public static final com.ons.android.LoggerLevel WARNING;
+  }
+
+  public class MessagingActivity {
+    ctor public MessagingActivity();
+    method public void finish();
+    method public void onCreate(android.os.Bundle);
+    method protected void onDestroy();
+    method public void onDialogDismiss(DialogFragment);
+    method protected void onSaveInstanceState(android.os.Bundle);
+    method protected void onStart();
+    method protected void onStop();
+    method public static void startActivityForMessage(android.content.Context, com.ons.android.ONSMessage);
+  }
+
+  public final class ONS {
+    method public static void copyONSExtras(@Nullable android.content.Intent, @Nullable android.content.Intent);
+    method public static void copyONSExtras(@Nullable android.os.Bundle, @Nullable android.os.Bundle);
+    method public static void disableMigration(@NonNull java.util.EnumSet<com.ons.android.ONSMigration>);
+    method @NonNull public static String getBroadcastPermissionName(@NonNull android.content.Context);
+    method @Nullable public static String getSessionID();
+    method public static boolean isOptedOut(@NonNull android.content.Context);
+    method public static void onCreate(android.app.Activity);
+    method public static void onDestroy(android.app.Activity);
+    method public static void onNewIntent(android.app.Activity, android.content.Intent);
+    method public static void onServiceCreate(android.content.Context, boolean);
+    method public static void onServiceDestroy(android.content.Context);
+    method public static void onStart(android.app.Activity);
+    method public static void onStop(android.app.Activity);
+    method public static void optIn(@NonNull android.content.Context);
+    method public static void optOut(@NonNull android.content.Context);
+    method public static void optOut(@NonNull android.content.Context, @Nullable com.ons.android.ONSOptOutResultListener);
+    method public static void optOutAndWipeData(@NonNull android.content.Context);
+    method public static void optOutAndWipeData(@NonNull android.content.Context, @Nullable com.ons.android.ONSOptOutResultListener);
+    method public static void setFindMyInstallationEnabled(boolean);
+    method public static void setLoggerDelegate(@Nullable com.ons.android.LoggerDelegate);
+    method public static void setLoggerLevel(@NonNull com.ons.android.LoggerLevel);
+    method public static void start(@NonNull String);
+    method public static void updateAutomaticDataCollection(com.ons.android.ONSDataCollectionConfig.Editor);
+    field public static final String ACTION_REGISTRATION_IDENTIFIER_OBTAINED = "com.ons.android.intent.action.push.REGISTRATION_IDENTIFIER_OBTAINED";
+    field public static final String BROADCAST_PERMISSION_SUFFIX = ".ons.permission.INTERNAL_BROADCAST";
+    field public static final String EXTRA_REGISTRATION_IDENTIFIER = "registration_id";
+    field public static final String EXTRA_REGISTRATION_PROVIDER_NAME = "provider_name";
+    field public static final String EXTRA_REGISTRATION_SENDER_ID = "sender_id";
+    field public static final String NOTIFICATION_TAG = "ons";
+  }
+
+  public static final class ONS.Actions {
+    method public static void addDrawableAlias(@NonNull String, int);
+    method public static boolean performAction(@NonNull android.content.Context, @NonNull String, @Nullable com.ons.android.json.JSONObject);
+    method public static void register(@NonNull com.ons.android.UserAction);
+    method public static void setDeeplinkInterceptor(@Nullable com.ons.android.ONSDeeplinkInterceptor);
+    method public static void unregister(@NonNull String);
+  }
+
+  public static final class ONS.Debug {
+    method public static void startDebugActivity(@NonNull android.content.Context);
+  }
+
+  public static final class ONS.EventDispatcher {
+    method public static void addDispatcher(com.ons.android.ONSEventDispatcher);
+    method public static boolean removeDispatcher(com.ons.android.ONSEventDispatcher);
+  }
+
+  public static interface ONS.EventDispatcher.Payload {
+    method @Nullable public String getCustomValue(@NonNull String);
+    method @Nullable public String getDeeplink();
+    method @Nullable public com.ons.android.ONSMessage getMessagingPayload();
+    method @Nullable public com.ons.android.ONSPushPayload getPushPayload();
+    method @Nullable public String getTrackingId();
+    method @Nullable public String getWebViewAnalyticsID();
+    method public boolean isPositiveAction();
+  }
+
+  public enum ONS.EventDispatcher.Type {
+    method public boolean isMessagingEvent();
+    method public boolean isNotificationEvent();
+    enum_constant public static final com.ons.android.ONS.EventDispatcher.Type MESSAGING_AUTO_CLOSE;
+    enum_constant public static final com.ons.android.ONS.EventDispatcher.Type MESSAGING_CLICK;
+    enum_constant public static final com.ons.android.ONS.EventDispatcher.Type MESSAGING_CLOSE;
+    enum_constant public static final com.ons.android.ONS.EventDispatcher.Type MESSAGING_CLOSE_ERROR;
+    enum_constant public static final com.ons.android.ONS.EventDispatcher.Type MESSAGING_SHOW;
+    enum_constant public static final com.ons.android.ONS.EventDispatcher.Type MESSAGING_WEBVIEW_CLICK;
+    enum_constant public static final com.ons.android.ONS.EventDispatcher.Type NOTIFICATION_DISMISS;
+    enum_constant public static final com.ons.android.ONS.EventDispatcher.Type NOTIFICATION_DISPLAY;
+    enum_constant public static final com.ons.android.ONS.EventDispatcher.Type NOTIFICATION_OPEN;
+  }
+
+  public static final class ONS.Inbox {
+    method @NonNull public static com.ons.android.ONSInboxFetcher getFetcher(@NonNull android.content.Context);
+    method @NonNull public static com.ons.android.ONSInboxFetcher getFetcher(@NonNull android.content.Context, @NonNull String, @NonNull String);
+  }
+
+  public static final class ONS.Messaging {
+    method public static boolean hasPendingMessage();
+    method public static boolean isDoNotDisturbEnabled();
+    method @NonNull public static com.ons.android.ONSBannerView loadBanner(@NonNull android.content.Context, @NonNull com.ons.android.ONSMessage) throws com.ons.android.ONSMessagingException;
+    method @NonNull public static DialogFragment loadFragment(@NonNull android.content.Context, @NonNull com.ons.android.ONSMessage) throws com.ons.android.ONSMessagingException;
+    method @Nullable public static com.ons.android.ONSMessage popPendingMessage();
+    method public static void setAutomaticMode(boolean);
+    method public static void setDoNotDisturbEnabled(boolean);
+    method public static void setLifecycleListener(@Nullable com.ons.android.ONS.Messaging.LifecycleListener);
+    method public static void setShowForegroundLandings(boolean);
+    method public static void setTypefaceOverride(@Nullable android.graphics.Typeface, @Nullable android.graphics.Typeface);
+    method public static void show(@NonNull android.content.Context, @NonNull com.ons.android.ONSMessage);
+    field public static final int GLOBAL_TAP_ACTION_INDEX = -1; // 0xffffffff
+  }
+
+  public static class ONS.Messaging.DisplayHint {
+    method public static com.ons.android.ONS.Messaging.DisplayHint embed(@NonNull android.widget.FrameLayout);
+    method public static com.ons.android.ONS.Messaging.DisplayHint findUsingView(@NonNull android.view.View);
+  }
+
+  public static interface ONS.Messaging.DisplayHintProvider {
+    method public com.ons.android.ONS.Messaging.DisplayHint getONSMessageDisplayHint(com.ons.android.ONSMessage);
+  }
+
+  public static interface ONS.Messaging.LifecycleListener {
+    method public default void onONSMessageActionTriggered(@Nullable String, int, @NonNull com.ons.android.ONSMessageAction);
+    method public default void onONSMessageCancelledByAutoclose(@Nullable String);
+    method public default void onONSMessageCancelledByError(@Nullable String);
+    method public default void onONSMessageCancelledByUser(@Nullable String);
+    method public void onONSMessageClosed(@Nullable String);
+    method public void onONSMessageShown(@Nullable String);
+    method public default void onONSMessageWebViewActionTriggered(@Nullable String, @Nullable String, @Nullable com.ons.android.ONSMessageAction);
+  }
+
+  public static interface ONS.Messaging.LifecycleListener2 extends com.ons.android.ONS.Messaging.LifecycleListener {
+    method public boolean onONSInAppMessageReady(@NonNull com.ons.android.ONSInAppMessage);
+  }
+
+  public static final class ONS.Profile {
+    method @NonNull public static com.ons.android.ONSProfileAttributeEditor editor();
+    method public static void identify(@Nullable String);
+    method public static void trackEvent(@NonNull String);
+    method public static void trackEvent(@NonNull String, @Nullable com.ons.android.ONSEventAttributes);
+    method public static void trackLocation(@NonNull android.location.Location);
+  }
+
+  public static final class ONS.Push {
+    method public static void appendONSData(android.content.Intent, android.content.Intent);
+    method public static void appendONSData(@NonNull android.os.Bundle, @NonNull android.content.Intent);
+    method public static void appendONSData(@NonNull RemoteMessage, @NonNull android.content.Intent);
+    method public static void dismissNotifications();
+    method public static void displayNotification(android.content.Context, android.content.Intent);
+    method public static void displayNotification(android.content.Context, android.content.Intent, boolean);
+    method public static void displayNotification(@NonNull android.content.Context, @NonNull android.content.Intent, @Nullable com.ons.android.ONSNotificationInterceptor);
+    method public static void displayNotification(@NonNull android.content.Context, @NonNull android.content.Intent, @Nullable com.ons.android.ONSNotificationInterceptor, boolean);
+    method public static void displayNotification(android.content.Context, RemoteMessage);
+    method public static void displayNotification(@NonNull android.content.Context, @NonNull RemoteMessage, @Nullable com.ons.android.ONSNotificationInterceptor);
+    method @NonNull public static com.ons.android.ONSNotificationChannelsManager getChannelsManager();
+    method @Nullable public static java.util.EnumSet<com.ons.android.PushNotificationType> getNotificationsType(android.content.Context);
+    method @Nullable public static com.ons.android.ONSPushRegistration getRegistration();
+    method public static boolean isManualDisplayModeActivated();
+    method public static boolean isONSPush(android.content.Intent);
+    method public static boolean isONSPush(RemoteMessage);
+    method @NonNull public static android.app.PendingIntent makePendingIntent(@NonNull android.content.Context, @NonNull android.content.Intent, @NonNull android.os.Bundle);
+    method @NonNull public static android.app.PendingIntent makePendingIntent(@NonNull android.content.Context, @NonNull android.content.Intent, @NonNull RemoteMessage);
+    method @Nullable public static android.app.PendingIntent makePendingIntentForDeeplink(@NonNull android.content.Context, @NonNull String, @NonNull android.os.Bundle);
+    method @Nullable public static android.app.PendingIntent makePendingIntentForDeeplink(@NonNull android.content.Context, @NonNull String, @NonNull RemoteMessage);
+    method public static void onNotificationDisplayed(android.content.Context, android.content.Intent);
+    method public static void onNotificationDisplayed(android.content.Context, RemoteMessage);
+    method public static void refreshRegistration();
+    method public static void requestNotificationPermission(@NonNull android.content.Context);
+    method public static void requestNotificationPermission(@NonNull android.content.Context, @Nullable com.ons.android.ONSPermissionListener);
+    method public static void setAdditionalIntentFlags(Integer);
+    method public static void setLargeIcon(android.graphics.Bitmap);
+    method public static void setManualDisplay(boolean);
+    method public static void setNotificationInterceptor(@Nullable com.ons.android.ONSNotificationInterceptor);
+    method public static void setNotificationsColor(int);
+    method public static void setNotificationsType(java.util.EnumSet<com.ons.android.PushNotificationType>);
+    method public static void setSmallIconResourceId(int);
+    method public static void setSound(android.net.Uri);
+    method public static boolean shouldDisplayPush(android.content.Context, android.content.Intent);
+    method public static boolean shouldDisplayPush(android.content.Context, RemoteMessage);
+    field public static final String ALERT_KEY = "msg";
+    field public static final String BODY_KEY = "msg";
+    field public static final String PAYLOAD_KEY = "onsPushPayload";
+    field public static final String TITLE_KEY = "title";
+  }
+
+  public static final class ONS.User {
+    method public static void clearInstallationData();
+    method public static void fetchAttributes(@NonNull android.content.Context, @Nullable com.ons.android.ONSAttributesFetchListener);
+    method public static void fetchTagCollections(@NonNull android.content.Context, @Nullable com.ons.android.ONSTagCollectionsFetchListener);
+    method @Nullable public static String getIdentifier(@NonNull android.content.Context);
+    method @Nullable public static String getInstallationID();
+    method @Nullable public static String getLanguage(@NonNull android.content.Context);
+    method @Nullable public static String getRegion(@NonNull android.content.Context);
+  }
+
+  public class ONSActionActivity extends android.app.Activity {
+    ctor public ONSActionActivity();
+    field public static final String EXTRA_DEEPLINK_KEY = "deeplink";
+  }
+
+  public final class ONSActionService extends android.app.IntentService {
+    ctor public ONSActionService();
+    method protected void onHandleIntent(android.content.Intent);
+  }
+
+  public class ONSActivityLifecycleHelper implements android.app.Application.ActivityLifecycleCallbacks {
+    ctor public ONSActivityLifecycleHelper();
+    method public void onActivityCreated(android.app.Activity, android.os.Bundle);
+    method public void onActivityDestroyed(android.app.Activity);
+    method public void onActivityPaused(android.app.Activity);
+    method public void onActivityResumed(android.app.Activity);
+    method public void onActivitySaveInstanceState(android.app.Activity, android.os.Bundle);
+    method public void onActivityStarted(android.app.Activity);
+    method public void onActivityStopped(android.app.Activity);
+  }
+
+  public class ONSAlertContent implements com.ons.android.ONSInAppMessage.Content {
+    method @Nullable public com.ons.android.ONSAlertContent.CTA getAcceptCTA();
+    method @Nullable public String getBody();
+    method @Nullable public String getCancelLabel();
+    method @Nullable public String getTitle();
+    method @Nullable public String getTrackingIdentifier();
+  }
+
+  public static class ONSAlertContent.CTA {
+    method @Nullable public String getAction();
+    method @Nullable public com.ons.android.json.JSONObject getArgs();
+    method @Nullable public String getLabel();
+  }
+
+  public interface ONSAttributesFetchListener {
+    method public void onError();
+    method public void onSuccess(@NonNull java.util.Map<java.lang.String,com.ons.android.ONSUserAttribute>);
+  }
+
+  public class ONSBannerContent implements com.ons.android.ONSInAppMessage.Content {
+    method public Long getAutoCloseTimeMillis();
+    method public String getBody();
+    method public java.util.List<com.ons.android.ONSBannerContent.CTA> getCtas();
+    method public com.ons.android.ONSBannerContent.Action getGlobalTapAction();
+    method public String getMediaAccessibilityDescription();
+    method public String getMediaURL();
+    method public String getTitle();
+    method public String getTrackingIdentifier();
+    method public boolean isShowCloseButton();
+  }
+
+  public static class ONSBannerContent.Action {
+    method @Nullable public String getAction();
+    method @Nullable public com.ons.android.json.JSONObject getArgs();
+  }
+
+  public static class ONSBannerContent.CTA extends com.ons.android.ONSBannerContent.Action {
+    method @Nullable public String getLabel();
+  }
+
+  public class ONSBannerView {
+    method public void dismiss(boolean);
+    method public void embed(@NonNull android.widget.FrameLayout);
+    method public void show(@NonNull android.app.Activity);
+    method public void show(@NonNull android.view.View);
+  }
+
+  public class ONSDataCollectionConfig {
+    ctor public ONSDataCollectionConfig();
+    method @Nullable public Boolean isDeviceBrandEnabled();
+    method @Nullable public Boolean isDeviceModelEnabled();
+    method @Nullable public Boolean isGeoIpEnabled();
+    method public com.ons.android.ONSDataCollectionConfig setDeviceBrandEnabled(boolean);
+    method public com.ons.android.ONSDataCollectionConfig setDeviceModelEnabled(boolean);
+    method public com.ons.android.ONSDataCollectionConfig setGeoIPEnabled(boolean);
+  }
+
+  public static interface ONSDataCollectionConfig.Editor {
+    method public void edit(com.ons.android.ONSDataCollectionConfig);
+  }
+
+  public interface ONSDeeplinkInterceptor {
+    method @Nullable public default android.content.Intent getFallbackIntent(@NonNull android.content.Context);
+    method @Nullable public android.content.Intent getIntent(@NonNull android.content.Context, @NonNull String);
+    method @Nullable public TaskStackBuilder getTaskStackBuilder(@NonNull android.content.Context, @NonNull String);
+  }
+
+  public enum ONSEmailSubscriptionState {
+    enum_constant public static final com.ons.android.ONSEmailSubscriptionState SUBSCRIBED;
+    enum_constant public static final com.ons.android.ONSEmailSubscriptionState UNSUBSCRIBED;
+  }
+
+  public class ONSEventAttributes {
+    ctor public ONSEventAttributes();
+    method public com.ons.android.ONSEventAttributes put(@NonNull String, @NonNull String);
+    method public com.ons.android.ONSEventAttributes put(@NonNull String, @NonNull java.net.URI);
+    method public com.ons.android.ONSEventAttributes put(@NonNull String, float);
+    method public com.ons.android.ONSEventAttributes put(@NonNull String, double);
+    method public com.ons.android.ONSEventAttributes put(@NonNull String, int);
+    method public com.ons.android.ONSEventAttributes put(@NonNull String, long);
+    method public com.ons.android.ONSEventAttributes put(@NonNull String, boolean);
+    method public com.ons.android.ONSEventAttributes put(@NonNull String, @NonNull java.util.Date);
+    method public com.ons.android.ONSEventAttributes put(@NonNull String, @NonNull com.ons.android.ONSEventAttributes);
+    method public com.ons.android.ONSEventAttributes putObjectList(@NonNull String, @NonNull java.util.List<com.ons.android.ONSEventAttributes>);
+    method public com.ons.android.ONSEventAttributes putStringList(@NonNull String, @NonNull java.util.List<java.lang.String>);
+    method public java.util.List<java.lang.String> validateEventAttributes();
+    field public static final String LABEL_KEY = "$label";
+    field public static final String TAGS_KEY = "$tags";
+  }
+
+  public interface ONSEventDispatcher {
+    method public void dispatchEvent(@NonNull com.ons.android.ONS.EventDispatcher.Type, @NonNull com.ons.android.ONS.EventDispatcher.Payload);
+    method @Nullable public default String getName();
+    method public default int getVersion();
+  }
+
+  public class ONSImageContent implements com.ons.android.ONSInAppMessage.Content {
+    method public int getAutoCloseDelay();
+    method public com.ons.android.ONSImageContent.Action getGlobalTapAction();
+    method public long getGlobalTapDelay();
+    method public String getImageDescription();
+    method public android.graphics.Point getImageSize();
+    method public String getImageURL();
+    method public boolean isAllowSwipeToDismiss();
+    method public boolean isFullscreen();
+  }
+
+  public static class ONSImageContent.Action {
+    method @Nullable public String getAction();
+    method @Nullable public com.ons.android.json.JSONObject getArgs();
+  }
+
+  public class ONSInAppMessage extends com.ons.android.ONSMessage implements com.ons.android.InAppMessageUserActionSource {
+    ctor public ONSInAppMessage(@Nullable String, @NonNull String, @NonNull com.ons.android.json.JSONObject, @NonNull com.ons.android.json.JSONObject, @NonNull com.ons.android.json.JSONObject);
+    method protected android.os.Bundle getBundleRepresentation();
+    method @Nullable public String getCampaignToken();
+    method @Nullable public com.ons.android.ONSInAppMessage.Content getContent();
+    method @NonNull public com.ons.android.json.JSONObject getCustomPayload();
+    method protected com.ons.android.json.JSONObject getJSON();
+    method protected String getKind();
+    field public static final String KIND = "inapp_campaign";
+  }
+
+  public static interface ONSInAppMessage.Content {
+  }
+
+  public class ONSInboxFetcher {
+    method public void fetchNewNotifications(@NonNull com.ons.android.ONSInboxFetcher.OnNewNotificationsFetchedListener);
+    method public void fetchNextPage(com.ons.android.ONSInboxFetcher.OnNextPageFetchedListener);
+    method @NonNull public java.util.List<com.ons.android.ONSInboxNotificationContent> getFetchedNotifications();
+    method public boolean hasMore();
+    method public void markAllAsRead();
+    method public void markAsDeleted(com.ons.android.ONSInboxNotificationContent);
+    method public void markAsRead(com.ons.android.ONSInboxNotificationContent);
+    method public void setFetchLimit(int);
+    method public void setFilterSilentNotifications(boolean);
+    method public void setHandlerOverride(@NonNull android.os.Handler);
+    method public void setMaxPageSize(int);
+  }
+
+  public static interface ONSInboxFetcher.OnNewNotificationsFetchedListener {
+    method public void onFetchFailure(@NonNull String);
+    method public void onFetchSuccess(@NonNull java.util.List<com.ons.android.ONSInboxNotificationContent>, boolean, boolean);
+  }
+
+  public static interface ONSInboxFetcher.OnNextPageFetchedListener {
+    method public void onFetchFailure(@NonNull String);
+    method public void onFetchSuccess(@NonNull java.util.List<com.ons.android.ONSInboxNotificationContent>, boolean);
+  }
+
+  public class ONSInboxNotificationContent {
+    method public void displayLandingMessage(@NonNull android.content.Context);
+    method @Nullable public String getBody();
+    method @NonNull public java.util.Date getDate();
+    method @NonNull public String getNotificationIdentifier();
+    method @NonNull public com.ons.android.ONSPushPayload getPushPayload() throws com.ons.android.ONSPushPayload.ParsingException;
+    method @NonNull public java.util.Map<java.lang.String,java.lang.String> getRawPayload();
+    method @NonNull public com.ons.android.ONSNotificationSource getSource();
+    method @Nullable public String getTitle();
+    method public boolean hasLandingMessage();
+    method public boolean isSilent();
+    method public boolean isUnread();
+  }
+
+  public class ONSInterstitialContent implements com.ons.android.ONSInAppMessage.Content {
+    method public String getBody();
+    method public java.util.List<com.ons.android.ONSInterstitialContent.CTA> getCtas();
+    method public String getHeader();
+    method public String getMediaAccessibilityDescription();
+    method public String getMediaURL();
+    method public String getTitle();
+    method public String getTrackingIdentifier();
+    method public boolean shouldShowCloseButton();
+  }
+
+  public static class ONSInterstitialContent.CTA {
+    method @Nullable public String getAction();
+    method @Nullable public com.ons.android.json.JSONObject getArgs();
+    method @Nullable public String getLabel();
+  }
+
+  public class ONSLandingMessage extends com.ons.android.ONSMessage implements com.ons.android.PushUserActionSource {
+    ctor protected ONSLandingMessage(@NonNull android.os.Bundle, @NonNull com.ons.android.json.JSONObject);
+    method protected android.os.Bundle getBundleRepresentation();
+    method protected com.ons.android.json.JSONObject getJSON();
+    method protected String getKind();
+    method public android.os.Bundle getPushBundle();
+    method public boolean isDisplayedFromInbox();
+    field public static final String KIND = "landing";
+  }
+
+  public abstract class ONSMessage implements com.ons.android.UserActionSource {
+    ctor public ONSMessage();
+    method protected abstract android.os.Bundle getBundleRepresentation();
+    method public com.ons.android.ONSMessage.Format getFormat();
+    method protected abstract com.ons.android.json.JSONObject getJSON();
+    method protected abstract String getKind();
+    method public static com.ons.android.ONSMessage getMessageForBundle(@NonNull android.os.Bundle) throws com.ons.android.ONSPushPayload.ParsingException;
+    method public void writeToBundle(@NonNull android.os.Bundle);
+    method public void writeToIntent(@NonNull android.content.Intent);
+    field public static final String MESSAGING_EXTRA_PAYLOAD_KEY = "com.ons.messaging.payload";
+  }
+
+  public enum ONSMessage.Format {
+    enum_constant public static final com.ons.android.ONSMessage.Format ALERT;
+    enum_constant public static final com.ons.android.ONSMessage.Format BANNER;
+    enum_constant public static final com.ons.android.ONSMessage.Format FULLSCREEN;
+    enum_constant public static final com.ons.android.ONSMessage.Format IMAGE;
+    enum_constant public static final com.ons.android.ONSMessage.Format MODAL;
+    enum_constant public static final com.ons.android.ONSMessage.Format UNKNOWN;
+    enum_constant public static final com.ons.android.ONSMessage.Format WEBVIEW;
+  }
+
+  public class ONSMessageAction {
+    method @Nullable public String getAction();
+    method @Nullable public com.ons.android.json.JSONObject getArgs();
+    method public boolean isDismissAction();
+  }
+
+  public class ONSMessageCTA extends com.ons.android.ONSMessageAction {
+    method @NonNull public String getLabel();
+  }
+
+  public class ONSMessagingException extends java.lang.Exception {
+    ctor public ONSMessagingException();
+    ctor public ONSMessagingException(String);
+    ctor public ONSMessagingException(String, Throwable);
+    ctor public ONSMessagingException(Throwable);
+  }
+
+  public class ONSMessagingWebViewJavascriptBridge {
+  }
+
+  public enum ONSMigration {
+    method @NonNull public static java.util.EnumSet<com.ons.android.ONSMigration> fromValue(int);
+    method public static boolean isCustomDataMigrationDisabled(@Nullable Integer);
+    method public static boolean isCustomIDMigrationDisabled(@Nullable Integer);
+    method public static int toValue(@NonNull java.util.EnumSet<com.ons.android.ONSMigration>);
+    enum_constant public static final com.ons.android.ONSMigration CUSTOM_DATA;
+    enum_constant public static final com.ons.android.ONSMigration CUSTOM_ID;
+    enum_constant public static final com.ons.android.ONSMigration NONE;
+  }
+
+  public class ONSModalContent implements com.ons.android.ONSInAppMessage.Content {
+    method public Long getAutoCloseTimeMillis();
+    method public String getBody();
+    method public java.util.List<com.ons.android.ONSModalContent.CTA> getCtas();
+    method public com.ons.android.ONSModalContent.Action getGlobalTapAction();
+    method public String getMediaAccessibilityDescription();
+    method public String getMediaURL();
+    method public String getTitle();
+    method public String getTrackingIdentifier();
+    method public boolean isShowCloseButton();
+  }
+
+  public static class ONSModalContent.Action {
+    method @Nullable public String getAction();
+    method @Nullable public com.ons.android.json.JSONObject getArgs();
+  }
+
+  public static class ONSModalContent.CTA extends com.ons.android.ONSModalContent.Action {
+    method @Nullable public String getLabel();
+  }
+
+  public class ONSNotificationAction {
+    ctor public ONSNotificationAction();
+    method @NonNull public static java.util.List<NotificationCompat.Action> getSupportActions(@NonNull android.content.Context, @NonNull java.util.List<com.ons.android.ONSNotificationAction>, @Nullable com.ons.android.ONSPushPayload, @Nullable Integer);
+    field public com.ons.android.json.JSONObject actionArguments;
+    field public String actionIdentifier;
+    field public String drawableName;
+    field public boolean hasUserInterface;
+    field public String label;
+    field public boolean shouldDismissNotification;
+  }
+
+  public final class ONSNotificationChannelsManager {
+    method public static boolean openSystemChannelSettings(@NonNull android.content.Context);
+    method public static boolean openSystemChannelSettings(@NonNull android.content.Context, @NonNull String);
+    method public static com.ons.android.ONSNotificationChannelsManager provide();
+    method public void setChannelIdInterceptor(@Nullable com.ons.android.ONSNotificationChannelsManager.NotificationChannelIdInterceptor);
+    method public void setChannelIdOverride(@Nullable String);
+    method public void setChannelName(@NonNull android.content.Context, int);
+    method public void setChannelNameProvider(@Nullable com.ons.android.ONSNotificationChannelsManager.ChannelNameProvider);
+    field public static final String DEFAULT_CHANNEL_ID = "_BATCHSDK_DEFAULT";
+  }
+
+  public static interface ONSNotificationChannelsManager.ChannelNameProvider {
+    method @NonNull public String getDefaultChannelName();
+  }
+
+  public static interface ONSNotificationChannelsManager.NotificationChannelIdInterceptor {
+    method @Nullable public String getChannelId(@NonNull com.ons.android.ONSPushPayload, String);
+  }
+
+  public static final class ONSNotificationChannelsManager.StringResChannelNameProvider implements com.ons.android.ONSNotificationChannelsManager.ChannelNameProvider {
+    ctor public ONSNotificationChannelsManager.StringResChannelNameProvider(@NonNull android.content.Context, int);
+    method @NonNull public String getDefaultChannelName();
+  }
+
+  public abstract class ONSNotificationInterceptor {
+    ctor public ONSNotificationInterceptor();
+    method @Nullable public NotificationCompat.Builder getPushNotificationCompatBuilder(@NonNull android.content.Context, @NonNull NotificationCompat.Builder, @NonNull android.os.Bundle, int);
+    method public int getPushNotificationId(@NonNull android.content.Context, int, @NonNull android.os.Bundle);
+  }
+
+  public enum ONSNotificationSource {
+    enum_constant public static final com.ons.android.ONSNotificationSource CAMPAIGN;
+    enum_constant public static final com.ons.android.ONSNotificationSource TRANSACTIONAL;
+    enum_constant public static final com.ons.android.ONSNotificationSource TRIGGER;
+    enum_constant public static final com.ons.android.ONSNotificationSource UNKNOWN;
+  }
+
+  public interface ONSOptOutResultListener {
+    method public com.ons.android.ONSOptOutResultListener.ErrorPolicy onError();
+    method public void onSuccess();
+  }
+
+  public enum ONSOptOutResultListener.ErrorPolicy {
+    enum_constant public static final com.ons.android.ONSOptOutResultListener.ErrorPolicy CANCEL;
+    enum_constant public static final com.ons.android.ONSOptOutResultListener.ErrorPolicy IGNORE;
+  }
+
+  public class ONSPermissionActivity extends android.app.Activity {
+    ctor public ONSPermissionActivity();
+    field public static final String ACTION_PERMISSION_RESULT;
+    field public static final String EXTRA_PERMISSION = "permission";
+    field public static final String EXTRA_REDIRECT_SETTINGS = "should_redirect_settings";
+    field public static final String EXTRA_RESULT = "result";
+  }
+
+  public interface ONSPermissionListener {
+    method public void onPermissionRequested(boolean);
+  }
+
+  public class ONSProfileAttributeEditor {
+    method public com.ons.android.ONSProfileAttributeEditor addToArray(@NonNull String, @NonNull String);
+    method public com.ons.android.ONSProfileAttributeEditor addToArray(@NonNull String, @NonNull java.util.List<java.lang.String>);
+    method public com.ons.android.ONSProfileAttributeEditor removeAttribute(@NonNull String);
+    method public com.ons.android.ONSProfileAttributeEditor removeFromArray(@NonNull String, @NonNull String);
+    method public com.ons.android.ONSProfileAttributeEditor removeFromArray(@NonNull String, @NonNull java.util.List<java.lang.String>);
+    method public void save();
+    method public com.ons.android.ONSProfileAttributeEditor setAttribute(@NonNull String, long);
+    method public com.ons.android.ONSProfileAttributeEditor setAttribute(@NonNull String, double);
+    method public com.ons.android.ONSProfileAttributeEditor setAttribute(@NonNull String, boolean);
+    method public com.ons.android.ONSProfileAttributeEditor setAttribute(@NonNull String, @NonNull java.util.Date);
+    method public com.ons.android.ONSProfileAttributeEditor setAttribute(@NonNull String, @NonNull String);
+    method public com.ons.android.ONSProfileAttributeEditor setAttribute(@NonNull String, @NonNull java.net.URI);
+    method public com.ons.android.ONSProfileAttributeEditor setAttribute(@NonNull String, @NonNull java.util.List<java.lang.String>);
+    method public com.ons.android.ONSProfileAttributeEditor setEmailAddress(@Nullable String);
+    method public com.ons.android.ONSProfileAttributeEditor setEmailMarketingSubscription(@NonNull com.ons.android.ONSEmailSubscriptionState);
+    method public com.ons.android.ONSProfileAttributeEditor setLanguage(@Nullable String);
+    method public com.ons.android.ONSProfileAttributeEditor setRegion(@Nullable String);
+  }
+
+  public class ONSPushJobService extends android.app.job.JobService {
+    ctor public ONSPushJobService();
+    method public boolean onStartJob(android.app.job.JobParameters);
+    method public boolean onStopJob(android.app.job.JobParameters);
+    field public static final String JOB_EXTRA_PUSH_DATA_KEY = "com.ons.push_data";
+  }
+
+  public class ONSPushMessageDismissReceiver extends android.content.BroadcastReceiver {
+    ctor public ONSPushMessageDismissReceiver();
+    method public static boolean completeWakefulIntent(android.content.Intent);
+    method public void onReceive(android.content.Context, android.content.Intent);
+    method public static android.content.ComponentName startWakefulService(android.content.Context, android.content.Intent);
+  }
+
+  public class ONSPushMessageReceiver extends android.content.BroadcastReceiver {
+    ctor public ONSPushMessageReceiver();
+    method public static boolean completeWakefulIntent(android.content.Intent);
+    method public void onReceive(android.content.Context, android.content.Intent);
+    method protected boolean presentNotification(@NonNull android.content.Context, @NonNull android.content.Intent);
+    method public static android.content.ComponentName startWakefulService(android.content.Context, android.content.Intent);
+  }
+
+  public class ONSPushPayload implements com.ons.android.PushUserActionSource {
+    method public java.util.List<com.ons.android.ONSNotificationAction> getActions();
+    method public String getBigPictureURL(android.content.Context);
+    method @Nullable public String getChannel();
+    method public String getCustomLargeIconURL(android.content.Context);
+    method public String getDeeplink();
+    method public String getGroup();
+    method public com.ons.android.ONSMessage getLandingMessage();
+    method public android.os.Bundle getPushBundle();
+    method public boolean hasBigPicture();
+    method public boolean hasCustomLargeIcon();
+    method public boolean hasDeeplink();
+    method public boolean hasLandingMessage();
+    method public boolean isGroupSummary();
+    method public static com.ons.android.ONSPushPayload payloadFromBundle(@Nullable android.os.Bundle) throws com.ons.android.ONSPushPayload.ParsingException;
+    method public static com.ons.android.ONSPushPayload payloadFromFirebaseMessage(@NonNull RemoteMessage) throws com.ons.android.ONSPushPayload.ParsingException;
+    method public static com.ons.android.ONSPushPayload payloadFromReceiverExtras(@NonNull android.os.Bundle) throws com.ons.android.ONSPushPayload.ParsingException;
+    method public static com.ons.android.ONSPushPayload payloadFromReceiverIntent(@NonNull android.content.Intent) throws com.ons.android.ONSPushPayload.ParsingException;
+    method public void writeToBundle(@NonNull android.os.Bundle);
+    method public void writeToIntentExtras(@NonNull android.content.Intent);
+  }
+
+  public static class ONSPushPayload.ParsingException extends java.lang.Exception {
+    ctor public ONSPushPayload.ParsingException();
+    ctor public ONSPushPayload.ParsingException(String);
+    ctor public ONSPushPayload.ParsingException(String, Throwable);
+  }
+
+  public class ONSPushRegistration {
+    ctor public ONSPushRegistration(@NonNull String, @NonNull String, @Nullable String, @Nullable String);
+    method @Nullable public String getGcpProjectID();
+    method @NonNull public String getProvider();
+    method @Nullable public String getSenderID();
+    method @NonNull public String getToken();
+  }
+
+  public class ONSPushService extends android.app.IntentService {
+    ctor public ONSPushService();
+    method protected void onHandleIntent(android.content.Intent);
+  }
+
+  public interface ONSTagCollectionsFetchListener {
+    method public void onError();
+    method public void onSuccess(@NonNull java.util.Map<java.lang.String,java.util.Set<java.lang.String>>);
+  }
+
+  public class ONSUserAttribute {
+    ctor public ONSUserAttribute(Object, com.ons.android.ONSUserAttribute.Type);
+    method @Nullable public Boolean getBooleanValue();
+    method @Nullable public java.util.Date getDateValue();
+    method @Nullable public Number getNumberValue();
+    method @Nullable public String getStringValue();
+    method @Nullable public java.net.URI getUriValue();
+    field public com.ons.android.ONSUserAttribute.Type type;
+    field public Object value;
+  }
+
+  public enum ONSUserAttribute.Type {
+    enum_constant public static final com.ons.android.ONSUserAttribute.Type BOOL;
+    enum_constant public static final com.ons.android.ONSUserAttribute.Type DATE;
+    enum_constant public static final com.ons.android.ONSUserAttribute.Type DOUBLE;
+    enum_constant public static final com.ons.android.ONSUserAttribute.Type LONGLONG;
+    enum_constant public static final com.ons.android.ONSUserAttribute.Type STRING;
+    enum_constant public static final com.ons.android.ONSUserAttribute.Type URL;
+  }
+
+  public class ONSWebViewContent implements com.ons.android.ONSInAppMessage.Content {
+    method @Nullable public String getURL();
+  }
+
+  public enum PushNotificationType {
+    method public static java.util.EnumSet<com.ons.android.PushNotificationType> fromValue(int);
+    method public static int toValue(java.util.EnumSet<com.ons.android.PushNotificationType>);
+    enum_constant public static final com.ons.android.PushNotificationType ALERT;
+    enum_constant public static final com.ons.android.PushNotificationType LIGHTS;
+    enum_constant public static final com.ons.android.PushNotificationType NONE;
+    enum_constant public static final com.ons.android.PushNotificationType SOUND;
+    enum_constant public static final com.ons.android.PushNotificationType VIBRATE;
+  }
+
+  public interface PushRegistrationProvider {
+    method public void checkLibraryAvailability() throws com.ons.android.PushRegistrationProviderAvailabilityException;
+    method public void checkServiceAvailability() throws com.ons.android.PushRegistrationProviderAvailabilityException;
+    method @Nullable public default String getGCPProjectID();
+    method @Nullable public String getRegistration();
+    method public String getSenderID();
+    method public String getShortname();
+  }
+
+  public class PushRegistrationProviderAvailabilityException extends java.lang.Exception {
+    ctor public PushRegistrationProviderAvailabilityException(String);
+  }
+
+  public interface PushUserActionSource extends com.ons.android.UserActionSource {
+    method public android.os.Bundle getPushBundle();
+  }
+
+  public class UserAction {
+    ctor public UserAction(@NonNull String, @NonNull com.ons.android.UserActionRunnable);
+    method @NonNull public String getIdentifier();
+    method @NonNull public com.ons.android.UserActionRunnable getRunnable();
+  }
+
+  public interface UserActionRunnable {
+    method public void performAction(@Nullable android.content.Context, @NonNull String, @NonNull com.ons.android.json.JSONObject, @Nullable com.ons.android.UserActionSource);
+  }
+
+  public interface UserActionSource {
+  }
+
+}
+
